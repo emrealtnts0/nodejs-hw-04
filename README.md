@@ -1,6 +1,6 @@
 <h1 align="center">NODEJS-HW-04</h1>
 
-<p align="center">REST API for Contact Management with Advanced Validation</p>
+<p align="center">REST API for Contact Management with Advanced Validation, Pagination & Filtering</p>
 
 <p align="center">
   <img src="https://img.shields.io/github/last-commit/emrealtnts0/nodejs-hw-04?color=blue&label=last%20commit" alt="Last Commit">
@@ -20,15 +20,17 @@
 
 ## Project Overview
 
-A RESTful API for managing a contact book. This project demonstrates advanced request validation using Joi, robust error handling, and a clean project structure. It is designed for learning and practicing backend fundamentals with Node.js, Express, and MongoDB.
+A comprehensive REST API for managing a contact book with advanced features including data validation, pagination, sorting, and filtering capabilities. This project demonstrates robust backend development practices using Node.js, Express, and MongoDB with Joi validation.
 
 ## Features
 
-- CRUD operations for contacts (Create, Read, Update, Delete)
-- Advanced validation for request bodies, params, and queries
-- Centralized error handling
-- Modular architecture
-- Environment-based configuration
+- **CRUD Operations**: Complete Create, Read, Update, Delete functionality for contacts
+- **Advanced Validation**: Request body validation using Joi schemas with custom rules
+- **ID Validation**: Middleware for validating MongoDB ObjectId format
+- **Pagination**: Configurable page-based navigation with metadata
+- **Sorting**: Flexible sorting by any contact field with ascending/descending order
+- **Filtering**: Filter contacts by type and favorite status
+- **Error Handling**: Centralized error management with appropriate HTTP status codes
 
 ## Installation
 
@@ -50,16 +52,62 @@ A RESTful API for managing a contact book. This project demonstrates advanced re
 
 ## API Endpoints
 
-- `GET /api/contacts` — List all contacts
-- `GET /api/contacts/:contactId` — Get a contact by ID
-- `POST /api/contacts` — Add a new contact (with validation)
-- `DELETE /api/contacts/:contactId` — Remove a contact
-- `PUT /api/contacts/:contactId` — Update a contact (with validation)
-- `PATCH /api/contacts/:contactId/favorite` — Update contact's favorite status
+### Contact Management
 
-## Validation
+- `GET /contacts` — List all contacts with pagination, sorting, and filtering
+- `GET /contacts/:contactId` — Get a contact by ID (with ID validation)
+- `POST /contacts` — Add a new contact (with comprehensive validation)
+- `PATCH /contacts/:contactId` — Update a contact (with validation and ID validation)
+- `DELETE /contacts/:contactId` — Remove a contact (with ID validation)
 
-All input data is validated using Joi schemas. Invalid requests return descriptive error messages and appropriate HTTP status codes.
+## Query Parameters
+
+### Pagination
+- `page` (default: 1) — Page number
+- `perPage` (default: 10) — Items per page
+
+### Sorting
+- `sortBy` (default: 'name') — Field to sort by
+- `sortOrder` (default: 'asc') — Sort direction ('asc' or 'desc')
+
+### Filtering
+- `type` — Filter by contact type ('work', 'home', 'personal')
+- `isFavourite` — Filter by favorite status (true/false)
+
+## Response Format
+
+### Paginated Response
+```json
+{
+  "status": 200,
+  "message": "Successfully found contacts!",
+  "data": {
+    "data": [/* contacts array */],
+    "page": 2,
+    "perPage": 4,
+    "totalItems": 6,
+    "totalPages": 2,
+    "hasPreviousPage": true,
+    "hasNextPage": false
+  }
+}
+```
+
+## Validation Rules
+
+- **Name**: Required, 3-20 characters
+- **Phone Number**: Required, 3-20 characters
+- **Email**: Optional, valid email format
+- **Contact Type**: Required, enum: ['work', 'home', 'personal']
+- **Is Favourite**: Optional, boolean value
+
+## Error Handling
+
+- `200` — Success
+- `201` — Created
+- `400` — Bad Request (validation errors, invalid ID format)
+- `404` — Not Found
+- `500` — Internal Server Error
 
 ## License
 
