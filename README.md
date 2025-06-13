@@ -1,173 +1,66 @@
-# Contact Management API with Validation
+<h1 align="center">NODEJS-HW-04</h1>
 
-This project implements a Contact Management API with advanced validation, pagination, sorting, and filtering features.
+<p align="center">REST API for Contact Management with Advanced Validation</p>
 
-## 🌐 Live Demo
-API is deployed and available at: [https://nodejs-hw-04-8c7n.onrender.com](https://nodejs-hw-04-8c7n.onrender.com)
+<p align="center">
+  <img src="https://img.shields.io/github/last-commit/emrealtnts0/nodejs-hw-04?color=blue&label=last%20commit" alt="Last Commit">
+  <img src="https://img.shields.io/github/languages/top/emrealtnts0/nodejs-hw-04?color=orange&label=JavaScript" alt="JavaScript Percentage">
+  <img src="https://img.shields.io/github/languages/count/emrealtnts0/nodejs-hw-04?color=green&label=languages" alt="Languages Count">
+</p>
 
-Visit the base URL to see the API documentation and available endpoints.
+<p align="center">Built with:</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js">
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/Joi-E43B3D?style=for-the-badge&logo=joi&logoColor=white" alt="Joi">
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" alt="ESLint">
+  <img src="https://img.shields.io/badge/.env-ECD53F?style=for-the-badge&logo=dot-env&logoColor=black" alt=".env">
+</p>
 
-## 🚀 Implementation Steps
+## Project Overview
 
-### Step 1: Branch Setup
-- Created `hw4-validation` branch from `hw3-crud`
-- All development is done in the `hw4-validation` branch
+A RESTful API for managing a contact book. This project demonstrates advanced request validation using Joi, robust error handling, and a clean project structure. It is designed for learning and practicing backend fundamentals with Node.js, Express, and MongoDB.
 
-### Step 2: Data Validation
-- Implemented `validateBody` middleware for request validation
-- Added validation to POST and PATCH routes
-- Created validation schemas with the following rules:
-  ```javascript
-  {
-    name: {
-      type: String,
-      required: true,
-      minLength: 3,
-      maxLength: 20
-    },
-    phoneNumber: {
-      type: String,
-      required: true,
-      minLength: 3,
-      maxLength: 20
-    },
-    email: {
-      type: String,
-      optional: true,
-      format: 'email'
-    },
-    isFavourite: {
-      type: Boolean,
-      default: false
-    },
-    contactType: {
-      type: String,
-      required: true,
-      enum: ['work', 'home', 'personal'],
-      default: 'personal'
-    }
-  }
-  ```
-- Added `isValidId` middleware for ID validation
-- Applied ID validation to all routes using contactId
+## Features
 
-### Step 3: Pagination
-- Implemented pagination for GET `/contacts` route
-- Query parameters:
-  - `page` (default: 1) - Page number
-  - `perPage` (default: 10) - Items per page
-- Response format:
-  ```json
-  {
-    "status": 200,
-    "message": "Successfully found contacts!",
-    "data": {
-      "data": [/* contacts array */],
-      "page": 1,
-      "perPage": 10,
-      "totalItems": 100,
-      "totalPages": 10,
-      "hasPreviousPage": false,
-      "hasNextPage": true
-    }
-  }
-  ```
+- CRUD operations for contacts (Create, Read, Update, Delete)
+- Advanced validation for request bodies, params, and queries
+- Centralized error handling
+- Modular architecture
+- Environment-based configuration
 
-### Step 4: Sorting
-- Added sorting capability to GET `/contacts` route
-- Query parameters:
-  - `sortBy` (default: 'name') - Field to sort by
-  - `sortOrder` (default: 'asc') - Sort direction ('asc' or 'desc')
-- Example: `GET /contacts?sortBy=name&sortOrder=desc`
+## Installation
 
-### Step 5: Filtering (Optional)
-- Implemented filtering for GET `/contacts` route
-- Query parameters:
-  - `type` - Filter by contact type ('work', 'home', 'personal')
-  - `isFavourite` - Filter by favorite status (true/false)
-- Example: `GET /contacts?type=work&isFavourite=true`
+1. **Clone the project:**
+    ```bash
+    git clone <repository-url>
+    cd nodejs-hw-04
+    ```
+2. **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3. **Configure environment variables:**
+    - Copy `.env.example` to `.env` and set your MongoDB URI and other settings.
+4. **Start the application:**
+    ```bash
+    npm start
+    ```
 
-## 🛠️ API Endpoints
+## API Endpoints
 
-### Get All Contacts
-- **GET** `/contacts`
-- **Query Parameters**:
-  - Pagination: `page`, `perPage`
-  - Sorting: `sortBy`, `sortOrder`
-  - Filtering: `type`, `isFavourite`
-- **Response**: 200 OK with paginated, sorted, and filtered data
+- `GET /api/contacts` — List all contacts
+- `GET /api/contacts/:contactId` — Get a contact by ID
+- `POST /api/contacts` — Add a new contact (with validation)
+- `DELETE /api/contacts/:contactId` — Remove a contact
+- `PUT /api/contacts/:contactId` — Update a contact (with validation)
+- `PATCH /api/contacts/:contactId/favorite` — Update contact's favorite status
 
-### Get Contact by ID
-- **GET** `/contacts/:contactId`
-- **Parameters**: 
-  - `contactId` (path parameter)
-- **Validation**: ID format is validated automatically
-- **Response**: 200 OK with contact data
+## Validation
 
-### Create New Contact
-- **POST** `/contacts`
-- **Validation Rules**:
-  - `name`: Required, 3-20 characters
-  - `phoneNumber`: Required, 3-20 characters
-  - `email`: Optional, valid email format
-  - `contactType`: Required, enum: ['work', 'home', 'personal']
-  - `isFavourite`: Optional, boolean
-- **Response**: 201 Created with new contact data
+All input data is validated using Joi schemas. Invalid requests return descriptive error messages and appropriate HTTP status codes.
 
-### Update Contact
-- **PATCH** `/contacts/:contactId`
-- **Parameters**: 
-  - `contactId` (path parameter)
-- **Validation**: Same as Create Contact, but all fields optional
-- **Response**: 200 OK with updated contact data
+## License
 
-### Delete Contact
-- **DELETE** `/contacts/:contactId`
-- **Parameters**: 
-  - `contactId` (path parameter)
-- **Response**: 200 OK with deleted contact data
-
-## ⚙️ Error Handling
-
-The API returns appropriate error responses:
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request (validation errors, invalid ID format)
-- `404` - Not Found
-- `500` - Internal Server Error
-
-## 🚀 Setup and Installation
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create `.env` file with required environment variables:
-   ```
-   PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/contacts_db
-   ```
-4. Start the server:
-   ```bash
-   npm run dev
-   ```
-
-## 🧪 Testing
-
-All features have been tested and verified:
-- ✅ Data validation (POST/PATCH requests)
-- ✅ ID validation
-- ✅ Pagination
-- ✅ Sorting
-- ✅ Filtering
-- ✅ Error handling
-
-## 🛠️ Technologies Used
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- Joi (validation)
-- createHttpError
-- dotenv 
+This project is licensed under the MIT License. See the LICENSE file for details. 
